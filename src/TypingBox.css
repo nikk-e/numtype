@@ -1,0 +1,33 @@
+@import './palette.css';
+
+.typingbox-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.typingbox-textarea {
+  width: 600px;
+  height: 300px;
+  font-size: 1.2rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--secondary-bg);
+  color: var(--primary-text);
+  resize: none;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(9,31,67,0.08);
+}
+.typingbox-textarea:focus {
+  border: 2px solid var(--accent-light);
+  color: var(--secondary-text);
+  box-shadow: 0 0 0 2px var(--accent);
+  background: var(--secondary-bg);
+}
+.typingbox-textarea::placeholder {
+  color: var(--secondary-text);
+  opacity: 1;
+}

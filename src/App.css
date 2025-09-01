@@ -1,0 +1,37 @@
+@import './palette.css';
+
+#root {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 0;
+  text-align: center;
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  box-sizing: border-box;
+}
+
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--primary-bg);
+}
+
+.main-header {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.main-header h1 {
+  font-size: 2.8rem;
+  color: var(--primary-text);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.subtitle {
+  color: var(--secondary-text);
+  font-size: 1.2rem;
+  margin: 0;
+}
