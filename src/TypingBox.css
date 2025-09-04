@@ -4,40 +4,146 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2rem;
+  width: 600px;
+}
+
+.retry-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  background-color: var(--secondary-bg);
+  color: var(--primary-text);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px 0 rgba(9,31,67,0.08);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.retry-button:hover {
+  border-color: var(--primary-text);
+  box-shadow: 0 0 0 1px var(--primary-text);
+}
+
+.stats {
+  width: 100%;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--primary-text);
+  margin-bottom: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 12px;
+  background-color: var(--secondary-bg);
+  box-shadow: 0 2px 8px 0 rgba(9,31,67,0.08);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.timer.low {
+  color: var(--incorrect-primary);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.target-text {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  font-size: 1.3rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.target-text .correct {
+  color: var(--correct-primary);
+  font-weight: 500;
+}
+
+.target-text .incorrect {
+  color: var(--incorrect-primary);
+  font-weight: 500;
+}
+
+.target-text .remaining {
+  color: var(--remaining-text);
+}
+
+.target-text .current-word {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.target-text .current-char {
+  background-color: rgba(196, 207, 225, 0.7);  /* --secondary-bg with higher opacity */
+  border-radius: 2px;
+}
+
+.target-text .incorrect.current-char {
+  background-color: rgba(214, 91, 91, 0.2);  /* --incorrect-primary with low opacity */
+}
+
+.typingbox-textarea-container {
   position: relative;
+  width: 100%;
+  display: block;
 }
 
 .typingbox-textarea {
-  width: 600px;
-  height: 300px;
+  display: block;
+  width: 100%;
+  height: 200px;
   font-size: 1.2rem;
   padding: 1rem;
-  padding-bottom: 2.5rem;  /* Add extra padding at bottom to prevent text overlap with indicator */
+  font-family: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+  text-align: left;
+  caret-color: var(--primary-text);
+  color: var(--primary-text);
   border-radius: 8px;
   border: 2px solid var(--border);
   background: var(--secondary-bg);
-  color: var(--primary-text);
   resize: none;
   outline: none;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
   box-shadow: 0 2px 8px 0 rgba(9,31,67,0.08);
+  box-sizing: border-box;
 }
 .typingbox-textarea:focus {
-  border: 2px solid var(--accent-light);
-  color: var(--secondary-text);
-  box-shadow: 0 0 0 2px var(--accent);
+  border: 2px solid var(--primary-text);
+  color: var(--primary-text);
+  box-shadow: 0 0 0 1px var(--primary-text);
   background: var(--secondary-bg);
 }
 .typingbox-textarea::placeholder {
-  color: var(--secondary-text);
-  opacity: 1;
+  color: var(--remaining-text);
+  opacity: 0.7;
 }
 
 .mode-indicator {
     position: absolute;
     bottom: 10px;
     right: 10px;
+    margin: 0;
     padding: 4px 8px;
     background-color: var(--secondary-bg);
     border-radius: 4px;

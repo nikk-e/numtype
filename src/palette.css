@@ -2,8 +2,11 @@
   --primary-bg: #FCF7F1;
   --secondary-bg: #C4CFE1;
   --primary-text: #091F43;
-  --secondary-text: #091F43;
-  --accent: #FF675E;
-  --accent-light: #D4AE63;
   --border: #091F43;
+  /* New typing-specific colors */
+  --correct-primary: #4E9F3D;
+  --correct-glow: #A7E8A0;
+  --incorrect-primary: #D65B5B;
+  --incorrect-glow: #FFB6B6;
+  --remaining-text: #6B7A99;
 }

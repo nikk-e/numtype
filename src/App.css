@@ -17,6 +17,8 @@
   align-items: center;
   justify-content: flex-start;
   background: var(--primary-bg);
+  position: relative;
+  width: 100%;
 }
 
 .main-header {
