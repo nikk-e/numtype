@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import TypingBox from './TypingBox';
 import ModeSelect from './ModeSelect';
 import GameLayout from './GameLayout';
+import TwoPlayerGame from './components/TwoPlayerGame';
 import './App.css';
 
 // Header component that changes subtitle based on route
@@ -27,7 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ModeSelect />} />
           <Route path="/1p" element={<GameLayout><TypingBox /></GameLayout>} />
-          <Route path="/2p" element={<GameLayout><div>Coming soon!</div></GameLayout>} />
+                    <Route path="/2p" element={<GameLayout><TwoPlayerGame /></GameLayout>} />
         </Routes>
       </div>
     </Router>

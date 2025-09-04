@@ -10,12 +10,9 @@ const ModeSelect: React.FC = () => {
       <button onClick={() => navigate('/1p')} className="mode-button">
         1P Mode
       </button>
-      <button onClick={() => navigate('/2p')} className="mode-button" disabled>
+      <button onClick={() => navigate('/2p')} className="mode-button">
         2P Mode
       </button>
-      <div className="mode-hint">
-        2P Mode coming soon!
-      </div>
     </div>
   );
 };

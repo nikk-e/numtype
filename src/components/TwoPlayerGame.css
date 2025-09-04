@@ -1,0 +1,30 @@
+.two-player-game {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.game-results {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background-color: var(--primary-bg);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(9,31,67,0.15);
+  border: 2px solid var(--border);
+}
+
+.game-results h2 {
+  font-size: 2rem;
+  margin-bottom: 0;
+  margin-top: 0;    
+  color: var(--primary-text);
+}
