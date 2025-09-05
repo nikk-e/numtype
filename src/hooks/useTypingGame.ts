@@ -23,6 +23,7 @@ export interface UseTypingGameReturn {
   wpm: number;
   validCharCount: number;
   handleKeyDown: (e: KeyboardEvent) => void;
+  reset: () => void;
 }
 
 export const useTypingGame = ({
@@ -86,13 +87,14 @@ export const useTypingGame = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (!isTestActive || timeLeft === 0) {
-      return;
-    }
-
     let key = e.key;
     if (key.startsWith('Numpad') || key.startsWith('Digit')) {
       key = key.slice(-1);
+    }
+    
+    // Return early only if the timer has run out
+    if (timeLeft === 0) {
+      return;
     }
 
     if (key === keyboardConfig.modeSwitchKey) {
@@ -138,6 +140,15 @@ export const useTypingGame = ({
     setLastPressTime(now);
   };
 
+  const reset = () => {
+    setText('');
+    setLastKey(null);
+    setPressCount(0);
+    setLastPressTime(0);
+    setWritingMode('abc');
+    setStartTime(null);
+  };
+
   return {
     text,
     writingMode,
@@ -145,5 +156,6 @@ export const useTypingGame = ({
     wpm: calculateWPM(),
     validCharCount: getValidCharCount(),
     handleKeyDown,
+    reset,
   };
 };

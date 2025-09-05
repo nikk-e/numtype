@@ -39,14 +39,10 @@ const player2Keys: KeyboardConfig = {
 };
 
 const TwoPlayerGame: React.FC = () => {
-  const [targetText, setTargetText] = useState('');
+  const [targetText, setTargetText] = useState(() => sentences[Math.floor(Math.random() * sentences.length)]);
   const [isTestActive, setIsTestActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [testCompleted, setTestCompleted] = useState(false);
-  
-  useEffect(() => {
-    setTargetText(sentences[Math.floor(Math.random() * sentences.length)]);
-  }, []);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
@@ -66,24 +62,17 @@ const TwoPlayerGame: React.FC = () => {
     setTestCompleted(true);
   };
 
-  const startNewGame = () => {
-    setTargetText(sentences[Math.floor(Math.random() * sentences.length)]);
+  const startNewGame = (isFirstGame?: boolean) => {
+    // Only keep the current sentence if explicitly starting first game
+    if (isFirstGame !== true) {
+      setTargetText(sentences[Math.floor(Math.random() * sentences.length)]);
+    }
+    player1Game.reset();
+    player2Game.reset();
     setTimeLeft(60);
-    setIsTestActive(true);
     setTestCompleted(false);
+    // Don't set isTestActive here - let the first keypress do it
   };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isTestActive && !testCompleted && 
-          (player1Keys.phoneMap[e.key] || player2Keys.phoneMap[e.key])) {
-        startNewGame();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isTestActive, testCompleted]);
 
   const player1Game = useTypingGame({
     targetText,
@@ -103,13 +92,31 @@ const TwoPlayerGame: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Player 1 keys
-      if (Object.keys(player1Keys.phoneMap).includes(e.key) || e.key === player1Keys.modeSwitchKey) {
-        player1Game.handleKeyDown(e);
+      const isPlayer1Key = Object.keys(player1Keys.phoneMap).includes(e.key) || e.key === player1Keys.modeSwitchKey;
+      const isPlayer2Key = Object.keys(player2Keys.phoneMap).includes(e.key) || e.key === player2Keys.modeSwitchKey;
+
+      // Start game on first valid keypress
+      if (!isTestActive && !testCompleted && (isPlayer1Key || isPlayer2Key)) {
+        startNewGame(true);
+        setIsTestActive(true);
+        // Also handle the first keypress
+        if (isPlayer1Key) {
+          player1Game.handleKeyDown(e);
+        }
+        if (isPlayer2Key) {
+          player2Game.handleKeyDown(e);
+        }
+        return;
       }
-      // Player 2 keys
-      if (Object.keys(player2Keys.phoneMap).includes(e.key) || e.key === player2Keys.modeSwitchKey) {
-        player2Game.handleKeyDown(e);
+
+      // Regular gameplay
+      if (isTestActive) {
+        if (isPlayer1Key) {
+          player1Game.handleKeyDown(e);
+        }
+        if (isPlayer2Key) {
+          player2Game.handleKeyDown(e);
+        }
       }
     };
 
@@ -144,7 +151,7 @@ const TwoPlayerGame: React.FC = () => {
       {testCompleted && (
         <div className="game-results">
           <h2>{determineWinner()}</h2>
-          <button onClick={startNewGame} className="retry-button">
+          <button onClick={() => startNewGame()} className="retry-button">
             Play Again
           </button>
         </div>
