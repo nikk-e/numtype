@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTypingGame, type KeyboardConfig } from '../hooks/useTypingGame';
+import { useDeviceDetection } from '../hooks/useDeviceDetection';
 import Player from './Player';
 import { sentences } from '../data/sentences';
 import './TwoPlayerGame.css';
 
-const player1Keys: KeyboardConfig = {
+// Both players now use the same number key layout
+const numberKeyConfig: KeyboardConfig = {
   phoneMap: {
     '7': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
     '8': ['a', 'b', 'c'],
@@ -21,28 +23,13 @@ const player1Keys: KeyboardConfig = {
   modeSwitchKey: '+',
 };
 
-const player2Keys: KeyboardConfig = {
-  phoneMap: {
-    'u': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
-    'i': ['a', 'b', 'c'],
-    'o': ['d', 'e', 'f'],
-    'j': ['g', 'h', 'i'],
-    'k': ['j', 'k', 'l'],
-    'l': ['m', 'n', 'o'],
-    'm': ['p', 'q', 'r', 's'],
-    ',': ['t', 'u', 'v'],
-    '.': ['w', 'x', 'y', 'z'],
-    'space': [' '],
-    'Delete': [''],  // Using Delete key for player 2's backspace
-  },
-  modeSwitchKey: '/',
-};
-
 const TwoPlayerGame: React.FC = () => {
   const [targetText, setTargetText] = useState(() => sentences[Math.floor(Math.random() * sentences.length)]);
   const [isTestActive, setIsTestActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [testCompleted, setTestCompleted] = useState(false);
+  
+  const { getPlayerForDevice, assignedDevices, resetDeviceAssignments } = useDeviceDetection();
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
@@ -71,6 +58,7 @@ const TwoPlayerGame: React.FC = () => {
     player2Game.reset();
     setTimeLeft(60);
     setTestCompleted(false);
+    resetDeviceAssignments(); // Reset device assignments for new game
     // Don't set isTestActive here - let the first keypress do it
   };
 
@@ -78,7 +66,7 @@ const TwoPlayerGame: React.FC = () => {
     targetText,
     isTestActive,
     timeLeft,
-    keyboardConfig: player1Keys,
+    keyboardConfig: numberKeyConfig,
     onTestEnd: handleTestEnd,
   });
 
@@ -86,35 +74,43 @@ const TwoPlayerGame: React.FC = () => {
     targetText,
     isTestActive,
     timeLeft,
-    keyboardConfig: player2Keys,
+    keyboardConfig: numberKeyConfig,
     onTestEnd: handleTestEnd,
   });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isPlayer1Key = Object.keys(player1Keys.phoneMap).includes(e.key) || e.key === player1Keys.modeSwitchKey;
-      const isPlayer2Key = Object.keys(player2Keys.phoneMap).includes(e.key) || e.key === player2Keys.modeSwitchKey;
+      // Check if this is a valid number key or mode switch
+      const isValidKey = Object.keys(numberKeyConfig.phoneMap).includes(e.key) || e.key === numberKeyConfig.modeSwitchKey;
+      
+      if (!isValidKey) return;
 
-      // Start game on first valid keypress
-      if (!isTestActive && !testCompleted && (isPlayer1Key || isPlayer2Key)) {
+      // Get device info to determine which player this input belongs to
+      const deviceId = `${e.location === 3 ? "numpad" : "standard"}-${e.code}`;
+      const playerNumber = getPlayerForDevice(deviceId);
+      
+      // If no player assigned yet, auto-assign based on device detection
+      if (!isTestActive && !testCompleted) {
         startNewGame(true);
         setIsTestActive(true);
-        // Also handle the first keypress
-        if (isPlayer1Key) {
+        
+        // Handle the first keypress for the appropriate player
+        if (playerNumber === 1) {
           player1Game.handleKeyDown(e);
-        }
-        if (isPlayer2Key) {
+        } else if (playerNumber === 2) {
           player2Game.handleKeyDown(e);
+        } else {
+          // If no player assigned, let device detection handle it in the background
+          // The key will be processed in the next event after device assignment
         }
         return;
       }
 
-      // Regular gameplay
+      // Regular gameplay - route to appropriate player based on device
       if (isTestActive) {
-        if (isPlayer1Key) {
+        if (playerNumber === 1) {
           player1Game.handleKeyDown(e);
-        }
-        if (isPlayer2Key) {
+        } else if (playerNumber === 2) {
           player2Game.handleKeyDown(e);
         }
       }
@@ -132,21 +128,37 @@ const TwoPlayerGame: React.FC = () => {
 
   return (
     <div className="two-player-game">
-      <Player
-        playerNumber={1}
-        targetText={targetText}
-        gameState={player1Game}
-        isTestActive={isTestActive}
-        timeLeft={timeLeft}
-      />
-      
-      <Player
-        playerNumber={2}
-        targetText={targetText}
-        gameState={player2Game}
-        isTestActive={isTestActive}
-        timeLeft={timeLeft}
-      />
+      {/* Device assignment status */}
+      <div className="device-status">
+        <div>
+          Player 1: {assignedDevices.player1 ? 
+            `${assignedDevices.player1.keyboardLocation} (${assignedDevices.player1.platform})` : 
+            'No device assigned'}
+        </div>
+        <div>
+          Player 2: {assignedDevices.player2 ? 
+            `${assignedDevices.player2.keyboardLocation} (${assignedDevices.player2.platform})` : 
+            'No device assigned'}
+        </div>
+      </div>
+
+      <div className="players-container">
+        <Player
+          playerNumber={1}
+          targetText={targetText}
+          gameState={player1Game}
+          isTestActive={isTestActive}
+          timeLeft={timeLeft}
+        />
+        
+        <Player
+          playerNumber={2}
+          targetText={targetText}
+          gameState={player2Game}
+          isTestActive={isTestActive}
+          timeLeft={timeLeft}
+        />
+      </div>
 
       {testCompleted && (
         <div className="game-results">
