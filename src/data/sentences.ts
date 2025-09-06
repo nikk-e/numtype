@@ -1,7 +1,14 @@
 export const sentences = [
-    "The quick brown fox jumps over the lazy dog.",
-    "Pack my box with five dozen liquor jugs.",
-    "How vexingly quick daft zebras jump.",
-    "The five boxing wizards jump quickly.",
-    "Sphinx of black quartz, judge my vow.",
+    "Object-oriented programming is a paradigm that uses objects and classes to structure code. It emphasizes encapsulation, inheritance, and polymorphism as core principles. These concepts help developers create modular and reusable software components.",
+    "Machine learning algorithms can identify patterns in large datasets through statistical analysis. Neural networks, decision trees, and support vector machines are popular approaches. Data preprocessing and feature engineering are crucial steps in the workflow.",
+    "The internet relies on a complex network of protocols and standards. TCP and IP form the foundation of modern communication systems. Routers, switches, and DNS servers work together to deliver packets across the globe efficiently.",
+    "Databases store and organize information using structured query language. Relational models use tables, rows, and columns to represent data relationships. Indexing and normalization improve performance and reduce redundancy in large systems.",
+    "Software engineering involves systematic approaches to designing and building applications. Agile methodologies emphasize iterative development and continuous feedback from stakeholders. Version control systems like Git help teams collaborate on code changes.",
+    "Cybersecurity protects digital assets from malicious attacks and unauthorized access. Encryption algorithms scramble sensitive data to prevent interception. Firewalls and intrusion detection systems monitor network traffic for suspicious activity.",
+    "Cloud computing delivers scalable resources over the internet on demand. Virtual machines and containers provide isolated environments for applications. Auto-scaling and load balancing ensure optimal performance during traffic spikes.",
+    "Artificial intelligence mimics human cognitive functions through computational methods. Natural language processing enables machines to understand and generate text. Computer vision algorithms can analyze and interpret visual information automatically.",
+    "Data structures organize information in memory for efficient storage and retrieval. Arrays, linked lists, and hash tables offer different performance characteristics. Algorithm complexity analysis helps developers choose optimal solutions for specific problems.",
+    "Web development combines frontend and backend technologies to create interactive experiences. HTML, CSS, and JavaScript handle user interface presentation and behavior. Server-side frameworks process requests and manage database connections.",
+    "Blockchain technology creates distributed ledgers that resist tampering and fraud. Cryptographic hashing ensures data integrity across network participants. Smart contracts automate transactions without requiring trusted intermediaries.",
+    "Computer graphics generate visual content through mathematical transformations and rendering techniques. Three-dimensional models use vertices, edges, and faces to represent geometric shapes. Shaders control lighting, texturing, and special effects in real-time applications."
 ];

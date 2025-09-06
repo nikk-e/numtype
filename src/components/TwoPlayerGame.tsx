@@ -165,11 +165,13 @@ const TwoPlayerGame: React.FC = () => {
       />
 
       {testCompleted && (
-        <div className="game-results">
-          <h2>{determineWinner()}</h2>
-          <button onClick={() => startNewGame()} className="retry-button">
-            Play Again
-          </button>
+        <div className="game-results-overlay">
+          <div className="game-results">
+            <h2>{determineWinner()}</h2>
+            <button onClick={() => startNewGame()} className="retry-button">
+              Play Again
+            </button>
+          </div>
         </div>
       )}
     </div>
