@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './TypingBox.css';
 import { sentences } from './data/sentences';
 
@@ -14,12 +15,13 @@ const phoneMap: { [key: string]: string[] } = {
 	'1': ['p', 'q', 'r', 's'],
 	'2': ['t', 'u', 'v'],
 	'3': ['w', 'x', 'y', 'z'],
-	'0': [' '],
-	'+': [''], // Placeholder for mode switch
-	'Backspace': [''], // Placeholder for backspace
+	' ': [' '], // Space key
+	',': [''], // Mode switch key
+	'Enter': [''], // Backspace key
 };
 
 const TypingBox: React.FC = () => {
+	const navigate = useNavigate();
 	const [text, setText] = useState('');
 	const [lastKey, setLastKey] = useState<string | null>(null);
 	const [pressCount, setPressCount] = useState(0);
@@ -49,6 +51,88 @@ const TypingBox: React.FC = () => {
 		}
 		return () => clearInterval(timer);
 	}, [isTestActive, timeLeft]);
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Extract the actual number from numpad or regular number keys
+			let key = e.key;
+			if (key.startsWith('Numpad') || key.startsWith('Digit')) {
+				key = key.slice(-1);
+			}
+
+			// Handle "+" key to go back to main menu (always available)
+			if (key === '+') {
+				e.preventDefault();
+				navigate('/');
+				return;
+			}
+
+			// Handle "-" key to restart game when test is completed
+			if (key === '-' && testCompleted) {
+				e.preventDefault();
+				setText('');
+				setTimeLeft(60);
+				setTestCompleted(false);
+				setStartTime(null);
+				setTargetText(sentences[Math.floor(Math.random() * sentences.length)]);
+				return;
+			}
+
+			// Handle completed test
+			if (testCompleted) {
+				e.preventDefault();
+				return;
+			}
+
+			// Start test on first valid key press
+			if (!isTestActive && phoneMap[key]) {
+				startTest();
+			}
+
+			const now = Date.now();
+
+			if (key === ',') {
+				e.preventDefault();
+				setWritingMode(current => current === 'abc' ? 'ABC' : 'abc');
+				return;
+			}
+
+			if (key === 'Enter') {
+				e.preventDefault();
+				setText(text.slice(0, -1));
+				setLastKey(null);
+				setPressCount(0);
+				setLastPressTime(now);
+				return;
+			}
+			if (!phoneMap[key]) {
+				e.preventDefault();
+				return;
+			}
+
+			e.preventDefault();
+			let newText = text;
+			if (key === lastKey && now - lastPressTime < 1000) {
+				setPressCount((prev) => {
+					const letters = phoneMap[key];
+					const formattedChar = formatText(letters[(prev + 1) % letters.length]);
+					newText = newText.slice(0, -1) + formattedChar;
+					setText(newText);
+					return (prev + 1) % letters.length;
+				});
+			} else {
+				setPressCount(0);
+				const formattedChar = formatText(phoneMap[key][0]);
+				newText = newText + formattedChar;
+				setText(newText);
+			}
+			setLastKey(key);
+			setLastPressTime(now);
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [navigate, testCompleted, isTestActive, text, lastKey, lastPressTime, writingMode]);
 
 	const startTest = () => {
 		setText('');
@@ -112,65 +196,6 @@ const TypingBox: React.FC = () => {
 
 	const formatText = (char: string): string => {
 		return writingMode === 'ABC' ? char.toUpperCase() : char.toLowerCase();
-	};
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		// Extract the actual number from numpad or regular number keys
-		let key = e.key;
-		if (key.startsWith('Numpad') || key.startsWith('Digit')) {
-			key = key.slice(-1);
-		}
-
-		// Handle completed test
-		if (testCompleted) {
-			e.preventDefault();
-			return;
-		}
-
-		// Start test on first valid key press
-		if (!isTestActive && phoneMap[key]) {
-			startTest();
-		}
-
-		const now = Date.now();
-
-		if (key === '+') {
-			e.preventDefault();
-			setWritingMode(current => current === 'abc' ? 'ABC' : 'abc');
-			return;
-		}
-
-		if (key === 'Backspace') {
-			e.preventDefault();
-			setText(text.slice(0, -1));
-			setLastKey(null);
-			setPressCount(0);
-			setLastPressTime(now);
-			return;
-		}
-		if (!phoneMap[key]) {
-			e.preventDefault();
-			return;
-		}
-
-		e.preventDefault();
-		let newText = text;
-		if (key === lastKey && now - lastPressTime < 1000) {
-			setPressCount((prev) => {
-				const letters = phoneMap[key];
-				const formattedChar = formatText(letters[(prev + 1) % letters.length]);
-				newText = newText.slice(0, -1) + formattedChar;
-				setText(newText);
-				return (prev + 1) % letters.length;
-			});
-		} else {
-			setPressCount(0);
-			const formattedChar = formatText(phoneMap[key][0]);
-			newText = newText + formattedChar;
-			setText(newText);
-		}
-		setLastKey(key);
-		setLastPressTime(now);
 	};
 
 	return (
@@ -245,9 +270,10 @@ const TypingBox: React.FC = () => {
 				<div className="typingbox-textarea-container">
 					<textarea
 						value={text}
-						onKeyDown={handleKeyDown}
+						readOnly
 						className="typingbox-textarea"
-						readOnly={testCompleted}
+						tabIndex={-1}
+						onFocus={(e) => e.target.blur()}
 					/>
 					<div className="mode-indicator">
 						{writingMode}

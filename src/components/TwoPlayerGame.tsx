@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTypingGame, type KeyboardConfig } from '../hooks/useTypingGame';
 import Player from './Player';
 import { sentences } from '../data/sentences';
@@ -15,30 +16,31 @@ const player1Keys: KeyboardConfig = {
     '1': ['p', 'q', 'r', 's'],
     '2': ['t', 'u', 'v'],
     '3': ['w', 'x', 'y', 'z'],
-    '0': [' '],
-    'Backspace': [''],
+    ' ': [' '], // Space key
+    'Enter': [''], // Backspace key
   },
-  modeSwitchKey: '+',
+  modeSwitchKey: ',', // Comma key for mode switch
 };
 
 const player2Keys: KeyboardConfig = {
   phoneMap: {
-    'u': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
-    'i': ['a', 'b', 'c'],
-    'o': ['d', 'e', 'f'],
-    'j': ['g', 'h', 'i'],
-    'k': ['j', 'k', 'l'],
-    'l': ['m', 'n', 'o'],
-    'm': ['p', 'q', 'r', 's'],
-    ',': ['t', 'u', 'v'],
-    '.': ['w', 'x', 'y', 'z'],
-    'space': [' '],
+    '.': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
+    'a': ['a', 'b', 'c'],
+    'd': ['d', 'e', 'f'],
+    'g': ['g', 'h', 'i'],
+    'j': ['j', 'k', 'l'],
+    'm': ['m', 'n', 'o'],
+    'p': ['p', 'q', 'r', 's'],
+    't': ['t', 'u', 'v'],
+    'w': ['w', 'x', 'y', 'z'],
+    's': [' '],
     'Delete': [''],  // Using Delete key for player 2's backspace
   },
   modeSwitchKey: '/',
 };
 
 const TwoPlayerGame: React.FC = () => {
+  const navigate = useNavigate();
   const [targetText, setTargetText] = useState(() => sentences[Math.floor(Math.random() * sentences.length)]);
   const [isTestActive, setIsTestActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
@@ -92,6 +94,20 @@ const TwoPlayerGame: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle "+" key to go back to main menu
+      if (e.key === '+') {
+        e.preventDefault();
+        navigate('/');
+        return;
+      }
+
+      // Handle "-" key to restart game when test is completed
+      if (e.key === '-' && testCompleted) {
+        e.preventDefault();
+        startNewGame();
+        return;
+      }
+
       const isPlayer1Key = Object.keys(player1Keys.phoneMap).includes(e.key) || e.key === player1Keys.modeSwitchKey;
       const isPlayer2Key = Object.keys(player2Keys.phoneMap).includes(e.key) || e.key === player2Keys.modeSwitchKey;
 

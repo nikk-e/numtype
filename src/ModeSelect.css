@@ -28,6 +28,14 @@
   box-shadow: 0 0 0 1px var(--primary-text);
 }
 
+.mode-button.selected {
+  border-color: var(--primary-text);
+  background-color: var(--primary-text);
+  color: var(--primary-bg);
+  box-shadow: 0 4px 12px 0 rgba(9,31,67,0.3);
+  transform: translateY(-2px);
+}
+
 .mode-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
