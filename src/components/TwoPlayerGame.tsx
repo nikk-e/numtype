@@ -24,7 +24,7 @@ const player1Keys: KeyboardConfig = {
 
 const player2Keys: KeyboardConfig = {
   phoneMap: {
-    '.': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
+    'u': ['.', ',', '?', '!', '\'', '\"', '-', '(', ')', '@', '/', ':', '1'],
     'a': ['a', 'b', 'c'],
     'd': ['d', 'e', 'f'],
     'g': ['g', 'h', 'i'],
@@ -34,9 +34,9 @@ const player2Keys: KeyboardConfig = {
     't': ['t', 'u', 'v'],
     'w': ['w', 'x', 'y', 'z'],
     's': [' '],
-    'Delete': [''],  // Using Delete key for player 2's backspace
+    'c': [''],  // Using Delete key for player 2's backspace
   },
-  modeSwitchKey: '/',
+  modeSwitchKey: 'e',
 };
 
 const TwoPlayerGame: React.FC = () => {
